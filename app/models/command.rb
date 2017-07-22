@@ -30,6 +30,9 @@ class Command
         e.message
       rescue NoMethodError
         "Invalid command"
+      rescue => e
+        Rails.logger.error e.inspect
+        e.message
       end
     end
   end
@@ -37,7 +40,14 @@ class Command
   def register
     pm_only
 
-    "Not implemented"
+    u = User.create!(
+      tg_id:    @message.from.id,
+      username: @message.from.username.downcase
+    )
+
+    "Added you " +
+    ("(@#{u.username})" if u.username.present?) +
+    " to my watchlist"
   end
 
   def pm_only(msg = nil)
