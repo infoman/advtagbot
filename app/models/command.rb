@@ -5,13 +5,13 @@ class Command
     return false unless entity.type == 'bot_command'
 
     full_command = message.text[entity.offset, entity.length]
-    command, addressee = full_command.split('@')
+    command, addressee = full_command.split('@').map { |c| c.downcase }
     command.gsub! /\A\//, ''
 
     unless message.chat.type == 'private'
       my_username = Responder.instance.api.get_me['result']['username']
 
-      return false unless addressee == my_username
+      return false unless addressee == my_username.downcase
     end
 
     self.new message, command
